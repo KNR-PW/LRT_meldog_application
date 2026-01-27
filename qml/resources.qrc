@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/">
+    <file>main.qml</file>
+    <file>Home/HomeView.qml</file>
+    <file>Components/BackgroundRoot.qml</file>
+    <file>MainToolBar.qml</file>
+  </qresource>
+</RCC>
