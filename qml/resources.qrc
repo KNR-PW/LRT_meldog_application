@@ -5,5 +5,7 @@
     <file>Home/HomeView.qml</file>
     <file>Components/BackgroundRoot.qml</file>
     <file>MainToolBar.qml</file>
+    <file>Components/TabBarItem.qml</file>
+    <file>AssistantPopup.qml</file>
   </qresource>
 </RCC>
