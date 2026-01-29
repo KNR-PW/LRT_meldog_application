@@ -13,12 +13,16 @@ Rectangle {
 
     property var tabs: [
         { label: "DASHBOARD" },
-        { label: "CHASSIS" }
+        { label: "RVIZ" },
+        { label: "JOINTS" }
     ]
 
     readonly property int itemCount: tabs.length
     readonly property real itemWidth: toolbarItemsArea.width / Math.max(1, itemCount)
     readonly property real tabHeight: Math.max(30 * px, height * 0.58)
+
+    border.color: "#1f2a37"
+    border.width: 1
 
     gradient: Gradient {
         GradientStop { position: 0.0; color: "#141C26" }
