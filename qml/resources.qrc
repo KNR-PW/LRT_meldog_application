@@ -19,5 +19,23 @@
     <file>Home/DocsAndCommPanel.qml</file>
     <file>Joints/MeldogView.qml</file>
     <file>MeldogModel/MeldogModel.qml</file>
+    <file>MeldogModel/Imported/foot_vis/Foot_vis.qml</file>
+    <file>MeldogModel/Imported/foot_vis/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/front_right_hip/Front_right_hip.qml</file>
+    <file>MeldogModel/Imported/front_right_hip/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/hip_test/Hip_test.qml</file>
+    <file>MeldogModel/Imported/hip_test/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/LL_vis_v2/LL_vis_v2.qml</file>
+    <file>MeldogModel/Imported/LL_vis_v2/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/lower_limb_test/Lower_limb_test.qml</file>
+    <file>MeldogModel/Imported/lower_limb_test/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/rear_left_hip/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/rear_left_hip/Rear_left_hip.qml</file>
+    <file>MeldogModel/Imported/rear_right_hip/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/rear_right_hip/Rear_right_hip.qml</file>
+    <file>MeldogModel/Imported/r_upper_limb_vis/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/r_upper_limb_vis/R_upper_limb_vis.qml</file>
+    <file>MeldogModel/Imported/upper_limb_test/meshes/node.mesh</file>
+    <file>MeldogModel/Imported/upper_limb_test/Upper_limb_test.qml</file>
   </qresource>
 </RCC>

@@ -1,5 +1,5 @@
 import QtQuick 2.15
-import QtQuick3D 
+import QtQuick3D
 import "qrc:/MeldogModel"
 
 Item {
@@ -8,8 +8,17 @@ Item {
 
     // "leg_lf", "leg_rf", "leg_lr", "leg_rr"
     signal legSelected(string legId)
-
     property string selectedLeg: ""
+
+    property real _yawDeg: 35
+    property real _pitchDeg: 35
+    property real _yawStartDeg: 0
+    property real _pitchStartDeg: 0
+
+    property real _distance: 2.2
+    readonly property vector3d _pivot: Qt.vector3d(0, 0.50, 0)
+    property real groundOffset: -0.01
+    property vector2d _lastDrag: Qt.vector2d(0, 0)
 
     View3D {
         id: view
@@ -25,45 +34,89 @@ Item {
 
             Node {
                 id: orbitPivot
-                position: Qt.vector3d(0, 0, 0.55)
-                eulerRotation.x: root._pitchDeg
+                position: root._pivot
                 eulerRotation.y: root._yawDeg
 
-                PerspectiveCamera {
-                    id: cam
-                    z: root._distance
-                    clipNear: 0.01
-                    clipFar: 100.0
+                Node {
+                    id: pitchNode
+                    eulerRotation.x: -root._pitchDeg
+
+                    PerspectiveCamera {
+                        id: cam
+                        z: root._distance
+                        clipNear: 0.001
+                        clipFar: 10000.0
+                    }
                 }
             }
 
-            DirectionalLight { eulerRotation.x: -35; eulerRotation.y: 45; brightness: 1.2 }
-            DirectionalLight { eulerRotation.x: -15; eulerRotation.y: -120; brightness: 0.6 }
+            DirectionalLight {
+                eulerRotation.x: -45
+                eulerRotation.y: 35
+                brightness: 1.4
+                castsShadow: true
+            }
 
-            MeldogModel {
-                id: robot
-                pickEnabled: true
-                robotScale: 1.0
+            DirectionalLight {
+                eulerRotation.x: -20
+                eulerRotation.y: -120
+                brightness: 0.6
+            }
+
+            Model {
+                source: "#Rectangle"
+                eulerRotation.x: -90      
+                y: 0
+                scale: Qt.vector3d(8, 8, 1)
+                pickable: false
+                receivesShadows: true
+                castsShadows: false
+
+                materials: PrincipledMaterial {
+                    baseColor: "#151a22"
+                    roughness: 0.45
+                    metalness: 0.0
+                }
+            }
+
+            Node {
+                id: robotRig
+                eulerRotation.x: -90
+                y: root.groundOffset
+
+                MeldogModel {
+                    id: robot
+                    pickEnabled: true
+                    robotScale: 0.001
+                    selectedLeg: root.selectedLeg
+                }
             }
         }
 
         camera: cam
     }
 
-    property real _yawDeg: 35
-    property real _pitchDeg: -20
-    property real _distance: 2.2   
-
     DragHandler {
+        id: orbitDrag
         acceptedButtons: Qt.LeftButton
-        onTranslationChanged: {
-            root._yawDeg += translation.x * 0.25
-            root._pitchDeg += translation.y * 0.25
+        target: null
 
-            if (root._pitchDeg < -85) root._pitchDeg = -85
-            if (root._pitchDeg >  85) root._pitchDeg =  85
+        onActiveChanged: {
+            if (active) {
+                root._yawStartDeg = root._yawDeg
+                root._pitchStartDeg = root._pitchDeg
+            }
+        }
+
+        onTranslationChanged: {
+            root._yawDeg = root._yawStartDeg - translation.x * 0.25
+            root._pitchDeg = root._pitchStartDeg + translation.y * 0.25
+
+            if (root._pitchDeg < 5)  root._pitchDeg = 5
+            if (root._pitchDeg > 89) root._pitchDeg = 89
         }
     }
+
 
     WheelHandler {
         onWheel: (event) => {
@@ -79,7 +132,8 @@ Item {
             const p = point.position
             const r = view.pick(p.x, p.y)
             if (r.objectHit && r.objectHit.objectName) {
-                root.legSelected(r.objectHit.objectName)
+                root.selectedLeg = r.objectHit.objectName
+                root.legSelected(root.selectedLeg)
             }
         }
     }
