@@ -17,5 +17,10 @@
     <file>Components/ControlColumn.qml</file>
     <file>Home/GamepadControlsPanel.qml</file>
     <file>Home/DocsAndCommPanel.qml</file>
+<<<<<<< HEAD
+=======
+    <file>Joints/MeldogView.qml</file>
+    <file>MeldogModel/MeldogModel.qml</file>
+>>>>>>> 5265032 (- full Meldog model added)
   </qresource>
 </RCC>

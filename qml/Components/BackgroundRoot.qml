@@ -1,5 +1,9 @@
 import QtQuick 2.0
+<<<<<<< HEAD
 import QtGraphicalEffects 1.0
+=======
+import Qt5Compat.GraphicalEffects
+>>>>>>> 5265032 (- full Meldog model added)
 
 Rectangle {
     id: root
