@@ -6,11 +6,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-<<<<<<< HEAD
-find_package(Qt5 REQUIRED COMPONENTS Widgets Quick QuickWidgets Qml)
-=======
+
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2)
->>>>>>> 5265032 (- full Meldog model added)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -27,13 +24,6 @@ add_executable(meldog_app
   include/backend/app_controller.hpp
 )
 
-<<<<<<< HEAD
-target_link_libraries(meldog_app
-  Qt5::Widgets
-  Qt5::Quick
-  Qt5::QuickWidgets
-  Qt5::Qml
-=======
 target_link_libraries(meldog_app PRIVATE
   Qt6::Core 
   Qt6::Gui 
@@ -41,7 +31,6 @@ target_link_libraries(meldog_app PRIVATE
   Qt6::Quick 
   Qt6::Widgets
   Qt6::QuickControls2
->>>>>>> 5265032 (- full Meldog model added)
 )
 
 install(TARGETS meldog_app

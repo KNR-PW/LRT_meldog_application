@@ -44,73 +44,40 @@ Node {
         }
     }
 
-    // FRONT LEFT LEG
-    Model { 
-<<<<<<< HEAD
-        source: "meshes/foot_vis.stl"
-=======
+    Model {
         source: "meshes/foot_vis.mesh"
->>>>>>> 5265032 (- full Meldog model added)
         materials: [ (root.selectedLeg === "leg_lf") ? legSelMat : legMat ]
         objectName: "leg_lf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, 0.2675, 0.05)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-    }
-
-    Model {
-        source: "meshes/LL_vis_v2.stl"
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
     }
 
     Model {
         source: "meshes/LL_vis_v2.mesh"
->>>>>>> 5265032 (- full Meldog model added)
         materials: [ (root.selectedLeg === "leg_lf") ? legSelMat : legMat ]
         objectName: "leg_lf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, 0.2675, 0.3)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-    }
-
-    Model {
-        source: "meshes/upper_limb_test.stl"
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
     }
 
     Model {
         source: "meshes/upper_limb_test.mesh"
->>>>>>> 5265032 (- full Meldog model added)
         materials: [ (root.selectedLeg === "leg_lf") ? legSelMat : legMat ]
         objectName: "leg_lf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, 0.2675, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-    }
-
-    Model {
-        source: "meshes/hip_test.stl"
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
     }
 
     Model {
         source: "meshes/hip_test.mesh"
->>>>>>> 5265032 (- full Meldog model added)
         materials: [ (root.selectedLeg === "leg_lf") ? legSelMat : legMat ]
         objectName: "leg_lf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.15, 0.175, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     // FRONT RIGHT LEG
@@ -120,11 +87,7 @@ Node {
         objectName: "leg_rf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, -0.2675, 0.05)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -133,11 +96,7 @@ Node {
         objectName: "leg_rf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, -0.2675, 0.3)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -146,11 +105,7 @@ Node {
         objectName: "leg_rf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.324, -0.2675, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -159,11 +114,7 @@ Node {
         objectName: "leg_rf"
         pickable: root.pickEnabled
         position: Qt.vector3d(0.15, -0.175, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     // REAR LEFT LEG
@@ -173,11 +124,7 @@ Node {
         objectName: "leg_lr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, 0.2675, 0.05)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -186,11 +133,7 @@ Node {
         objectName: "leg_lr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, 0.2675, 0.3)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -199,11 +142,7 @@ Node {
         objectName: "leg_lr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, 0.2675, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -212,11 +151,7 @@ Node {
         objectName: "leg_lr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.15, 0.175, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     // REAR RIGHT LEG
@@ -226,11 +161,7 @@ Node {
         objectName: "leg_rr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, -0.2675, 0.05)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -239,11 +170,7 @@ Node {
         objectName: "leg_rr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, -0.2675, 0.3)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -252,11 +179,7 @@ Node {
         objectName: "leg_rr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.324, -0.2675, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 
     Model {
@@ -265,10 +188,6 @@ Node {
         objectName: "leg_rr"
         pickable: root.pickEnabled
         position: Qt.vector3d(-0.15, -0.175, 0.55)
-<<<<<<< HEAD
-        rotation: Qt.quaternion(1, 0, 0, 0)
-=======
         rotation: Qt.quaternion(0, 0, 0, 1)
->>>>>>> 5265032 (- full Meldog model added)
     }
 }

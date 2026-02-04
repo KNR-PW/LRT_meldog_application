@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import QtQuick 2.0
-=======
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
->>>>>>> 5265032 (- full Meldog model added)
 import "qrc:/Components"
 
 Item {
@@ -12,12 +8,6 @@ Item {
     anchors.fill: parent
 
     property real px: 1.0
-<<<<<<< HEAD
-
-    Card {
-        id: mainCard 
-        px: root.px 
-=======
     property string selectedLeg: "leg_lf"
 
     property var legToJoints: ({
@@ -30,7 +20,6 @@ Item {
     Card {
         id: mainCard
         px: root.px
->>>>>>> 5265032 (- full Meldog model added)
         clip: true
 
         anchors.left: parent.left
@@ -43,13 +32,6 @@ Item {
         anchors.topMargin: 80 * px
         anchors.bottomMargin: 160 * px
 
-<<<<<<< HEAD
-        Text {
-            anchors.centerIn: parent
-            text: "JointsView (placeholder)"
-            color: "#E6EAF2"
-            font.pixelSize: 22
-=======
         Item {
             anchors.fill: parent
             anchors.margins: 20 * px
@@ -140,7 +122,6 @@ Item {
                     }
                 }
             }
->>>>>>> 5265032 (- full Meldog model added)
         }
     }
 }

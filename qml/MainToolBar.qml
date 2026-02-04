@@ -67,14 +67,9 @@ Rectangle {
 
     Rectangle {
         id: assistantButton
-<<<<<<< HEAD
-        width: Math.max(40 * px, height * 0.55)
-        height: width
-=======
         readonly property real size: Math.max(40 * px, root.height * 0.55)
         width: size
         height: size
->>>>>>> 5265032 (- full Meldog model added)
         radius: 12 * px
         anchors.right: parent.right
         anchors.rightMargin: 14 * px
