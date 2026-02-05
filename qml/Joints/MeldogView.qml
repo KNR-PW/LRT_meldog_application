@@ -10,6 +10,9 @@ Item {
     signal legSelected(string legId)
     property string selectedLeg: ""
 
+    property string _currentLeg: selectedLeg
+    onSelectedLegChanged: _currentLeg = selectedLeg
+
     property real _yawDeg: 35
     property real _pitchDeg: 35
     property real _yawStartDeg: 0
@@ -132,8 +135,9 @@ Item {
             const p = point.position
             const r = view.pick(p.x, p.y)
             if (r.objectHit && r.objectHit.objectName) {
-                root.selectedLeg = r.objectHit.objectName
-                root.legSelected(root.selectedLeg)
+                const legId = r.objectHit.objectName
+                root._currentLeg = legId
+                root.legSelected(legId)
             }
         }
     }

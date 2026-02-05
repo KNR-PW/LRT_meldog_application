@@ -37,5 +37,6 @@
     <file>MeldogModel/Imported/r_upper_limb_vis/R_upper_limb_vis.qml</file>
     <file>MeldogModel/Imported/upper_limb_test/meshes/node.mesh</file>
     <file>MeldogModel/Imported/upper_limb_test/Upper_limb_test.qml</file>
+    <file>Joints/MeldogJointsView.qml</file>
   </qresource>
 </RCC>
