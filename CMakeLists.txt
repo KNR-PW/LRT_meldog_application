@@ -7,6 +7,9 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Quick Widgets QuickControls2)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -20,17 +23,24 @@ include_directories(include)
 add_executable(LRT_meldog_application
   app/main.cpp
   backend/app_controller.cpp
+  backend/diagnostics_node.cpp
   qml/resources.qrc
   include/backend/app_controller.hpp
+  include/backend/diagnostics_node.hpp
 )
 
-target_link_libraries(LRT_meldog_application PRIVATE
+target_link_libraries(LRT_meldog_application
   Qt6::Core 
   Qt6::Gui 
   Qt6::Qml 
   Qt6::Quick 
   Qt6::Widgets
   Qt6::QuickControls2
+)
+
+ament_target_dependencies(LRT_meldog_application
+  rclcpp
+  sensor_msgs
 )
 
 install(TARGETS LRT_meldog_application
