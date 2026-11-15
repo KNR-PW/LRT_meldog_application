@@ -24,6 +24,9 @@ add_executable(LRT_meldog_application
   app/main.cpp
   backend/app_controller.cpp
   backend/diagnostics_node.cpp
+  backend/diagnostics_bridge.cpp
+
+  include/backend/diagnostics_bridge.hpp
   include/backend/app_controller.hpp
   include/backend/diagnostics_node.hpp
 )

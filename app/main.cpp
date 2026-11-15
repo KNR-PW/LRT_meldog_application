@@ -3,56 +3,71 @@
 #include <QQuickView>
 #include <QQmlContext>
 #include <QUrl>
-#include <QTimer>             // NOWE
+#include <QTimer>
 #include <QQuickWindow>
 
-#include <memory>             // NOWE
-#include <rclcpp/rclcpp.hpp>  // NOWE
+#include <memory>
+#include <rclcpp/rclcpp.hpp>
 
 #include "backend/app_controller.hpp"
-#include "backend/diagnostics_node.hpp" // NOWE
+#include "backend/diagnostics_node.hpp"
+#include "backend/diagnostics_bridge.hpp"
 
 int main(int argc, char** argv)
 {
     
     qputenv("LIBGL_ALWAYS_SOFTWARE", "1");
 
-    rclcpp::init(argc, argv); // NOWE
+    rclcpp::init(argc, argv);
 
     QApplication app(argc, argv);
     backend::AppController appController;
 
 
-    // NOWE: utworzenie Subscribera
+    
     auto diagnosticsNode =
         std::make_shared<backend::DiagnosticsNode>();
 
-    // NOWE: executor ROS 2
+    backend::DiagnosticsBridge diagnosticsBridge;
+
+    diagnosticsNode->setJointUpdateCallback(
+        [&diagnosticsBridge](const std::string& name, double position) {
+            diagnosticsBridge.updateJoint(QString::fromStdString(name), position);
+        }
+    );
+
+    
     rclcpp::executors::SingleThreadedExecutor executor;
     executor.add_node(diagnosticsNode);
 
-    // NOWE: timer obsługujący ROS 2
     QTimer rosTimer;
     QObject::connect(
         &rosTimer,
         &QTimer::timeout,
         [&executor]() {
+
+            if (!rclcpp::ok()) {
+                QApplication::quit();
+                return;
+            }
             executor.spin_some();
         }
     );
+
     rosTimer.start(10);
 
-    // BEZ ZMIAN: okno Qt
+
     QQuickView view;
     view.rootContext()->setContextProperty(
         "appController", &appController);
+    view.rootContext()->setContextProperty("diagnosticsBridge", &diagnosticsBridge);
 
     view.setResizeMode(
         QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/main.qml"));
     view.showMaximized();
 
-    // ZMIENIONE: zamykanie programu
+    
     int result = app.exec();
 
     rosTimer.stop();

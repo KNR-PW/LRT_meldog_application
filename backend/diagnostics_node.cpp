@@ -32,13 +32,23 @@ void DiagnosticsNode::jointCallback(
          i < msg->position.size();
          ++i)
     {
-        RCLCPP_INFO(
-            get_logger(),
-            "Joint: %s | Position: %.3f rad",
-            msg->name[i].c_str(),
-            msg->position[i]
-        );
+        // RCLCPP_INFO(
+        //     get_logger(),
+        //     "Joint: %s | Position: %.3f rad",
+        //     msg->name[i].c_str(),
+        //     msg->position[i]
+        // );
+
+        if(this->jointUpdateCallback_ != nullptr){
+            jointUpdateCallback_(msg->name[i], msg->position[i]);
+        };
     }
+}
+
+void DiagnosticsNode::setJointUpdateCallback(
+    std::function<void(const std::string&, double)> callback)
+{
+    this->jointUpdateCallback_ = callback;
 }
 
 }
