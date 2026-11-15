@@ -24,9 +24,14 @@ add_executable(LRT_meldog_application
   app/main.cpp
   backend/app_controller.cpp
   backend/diagnostics_node.cpp
-  qml/resources.qrc
   include/backend/app_controller.hpp
   include/backend/diagnostics_node.hpp
+)
+
+qt6_add_big_resources(BIG_RESOURCES qml/resources.qrc)
+
+target_sources(LRT_meldog_application
+    PRIVATE ${BIG_RESOURCES}
 )
 
 target_link_libraries(LRT_meldog_application

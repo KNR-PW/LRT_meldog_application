@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include <QUrl>
 #include <QTimer>             // NOWE
+#include <QQuickWindow>
 
 #include <memory>             // NOWE
 #include <rclcpp/rclcpp.hpp>  // NOWE
@@ -13,10 +14,14 @@
 
 int main(int argc, char** argv)
 {
+    
+    qputenv("LIBGL_ALWAYS_SOFTWARE", "1");
+
     rclcpp::init(argc, argv); // NOWE
 
     QApplication app(argc, argv);
     backend::AppController appController;
+
 
     // NOWE: utworzenie Subscribera
     auto diagnosticsNode =

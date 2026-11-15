@@ -4,6 +4,7 @@ import "Components"
 import "Home"
 import "Rviz"
 import "Joints"
+import "Diagnostics"
 
 BackgroundRoot {
     id: root
@@ -45,6 +46,13 @@ BackgroundRoot {
         JointsView {
             px: root.px
             visible: mainToolBar.toolbarIndex === 2
+            enabled: visible
+        }
+
+        DiagnosticsView {
+            anchors.fill: parent
+            px: root.px
+            visible: mainToolBar.toolbarIndex === 3
             enabled: visible
         }
     }
