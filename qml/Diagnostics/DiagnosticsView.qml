@@ -8,9 +8,6 @@ Rectangle {
     color: "#202630"
     property real px: 1.0
 
-    Component.onCompleted: {
-        console.log("DIAGNOSTICS VIEW IS LOADED")
-    }
 
     // Joints
 

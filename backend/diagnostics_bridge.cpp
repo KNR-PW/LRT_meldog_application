@@ -7,9 +7,7 @@ DiagnosticsBridge::DiagnosticsBridge(QObject* parent)
 {
 }
 
-void DiagnosticsBridge::updateJoint(
-    const QString& name,
-    double position)
+void DiagnosticsBridge::updateJoint(const QString& name, double position)
 {
     emit jointUpdated(name, position);
 }

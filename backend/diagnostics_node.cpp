@@ -1,10 +1,13 @@
 
 #include "backend/diagnostics_node.hpp"
+#include <chrono>
+#include <cstddef>
+#include <vector>
+#include <unordered_map>
 
 namespace backend {
 
-DiagnosticsNode::DiagnosticsNode()
-    : Node("meldog_diagnostics")
+DiagnosticsNode::DiagnosticsNode(): Node("meldog_diagnostics")
 {
     jointSubscription_ =
         this->create_subscription<
@@ -18,10 +21,49 @@ DiagnosticsNode::DiagnosticsNode()
             }
         );
 
-    RCLCPP_INFO(
-        get_logger(),
-        "Waiting for /joint_states..."
-    );
+    RCLCPP_INFO(get_logger(), "Waiting for /joint_states...");
+
+    for(auto& [topicName, topicData] : monitoredTopics_){
+        if(topicData.subscription==nullptr)
+            topicData = addGenericTopicSubscriber(topicName);
+        
+    }
+}
+
+
+DiagnosticsNode::MonitoredTopic DiagnosticsNode::addGenericTopicSubscriber(std::string topicName){
+
+    auto topics = get_topic_names_and_types();
+    auto it = topics.find(topicName);
+
+    if (it == topics.end() || it->second.size() != 1) {
+        return MonitoredTopic{};
+    }
+
+    std::string messageType = it->second[0];
+
+
+    return MonitoredTopic{
+        messageType,
+        0, 
+        
+        this->create_generic_subscription(
+            topicName,
+            messageType,
+            rclcpp::QoS(10),
+
+            [this, topicName](std::shared_ptr<rclcpp::SerializedMessage> /*msg*/) {
+                monitoredTopics_[topicName].messageCount++;
+                RCLCPP_INFO(
+                    get_logger(),
+                    "Topic: %s | Count: %zu",
+                    topicName.c_str(),
+                    monitoredTopics_[topicName].messageCount
+                );
+            }
+            )
+    };
+        
 }
 
 void DiagnosticsNode::jointCallback(
@@ -32,12 +74,6 @@ void DiagnosticsNode::jointCallback(
          i < msg->position.size();
          ++i)
     {
-        // RCLCPP_INFO(
-        //     get_logger(),
-        //     "Joint: %s | Position: %.3f rad",
-        //     msg->name[i].c_str(),
-        //     msg->position[i]
-        // );
 
         if(this->jointUpdateCallback_ != nullptr){
             jointUpdateCallback_(msg->name[i], msg->position[i]);
@@ -50,5 +86,4 @@ void DiagnosticsNode::setJointUpdateCallback(
 {
     this->jointUpdateCallback_ = callback;
 }
-
 }
