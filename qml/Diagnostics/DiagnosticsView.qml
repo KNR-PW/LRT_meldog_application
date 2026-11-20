@@ -5,15 +5,28 @@ import QtQuick.Controls
 Rectangle {
     width: 700
     height: 450
-    color: "#202630"
+    color: "#0F1620"
     property real px: 1.0
 
 
-    // Joints
 
     ListModel {
         id: jointModel
 
+    }
+
+    ListModel {
+        id: topicModel
+
+        ListElement {
+            topicName: "/joint_states"
+            frequency: 0.0
+        }
+
+        ListElement {
+            topicName: "/tf"
+            frequency: 0.0
+        }
     }
 
     Connections {
@@ -29,9 +42,23 @@ Rectangle {
 
             jointModel.append({jointName: name, jointPosition: position})
         }
+
+        function onTopicFrequenciesUpdated(topics) {
+            console.log("Received", topics.length, "topics")
+
+            for (let top = 0; top < topics.length; top++) {
+                console.log(topics[top].name, topics[top].frequency)
+                for(let i = 0; i < topicModel.count; i++){
+                    if(topicModel.get(i).topicName===topics[top].name){
+                        topicModel.setProperty(i, "frequency", topics[top].frequency)
+                    }
+                }
+            }
+        }
     }
     
 
+    // Joints
 
     Column {
         anchors.top: parent.top
@@ -72,19 +99,7 @@ Rectangle {
     }
     
     // TOPICS
-    ListModel {
-        id: topicModel
 
-        ListElement {
-            topicName: "/joint_states"
-            frequency: 50.0
-        }
-
-        ListElement {
-            topicName: "/tf"
-            frequency: 30.0
-        }
-    }
 
     Column {
         anchors.bottom: parent.bottom

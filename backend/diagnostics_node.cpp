@@ -26,8 +26,28 @@ DiagnosticsNode::DiagnosticsNode(): Node("meldog_diagnostics")
     for(auto& [topicName, topicData] : monitoredTopics_){
         if(topicData.subscription==nullptr)
             topicData = addGenericTopicSubscriber(topicName);
-        
     }
+
+    frequencyTimer_ = this->create_wall_timer(
+        std::chrono::seconds(1),
+        [this]() {
+            std::vector<std::pair<std::string, double>> frequencies;
+
+            for (auto& [topicName, topicData] : monitoredTopics_) {
+
+                if (!topicData.subscription) {
+                    continue;
+                }
+
+                frequencies.push_back({topicName, topicData.messageCount});
+                topicData.messageCount = 0;
+                
+            }
+            if (topicFrequenciesCallback_) {
+                topicFrequenciesCallback_(frequencies);
+            }
+        }
+    );
 }
 
 
@@ -50,16 +70,16 @@ DiagnosticsNode::MonitoredTopic DiagnosticsNode::addGenericTopicSubscriber(std::
         this->create_generic_subscription(
             topicName,
             messageType,
-            rclcpp::QoS(10),
+            rclcpp::SensorDataQoS(),
 
             [this, topicName](std::shared_ptr<rclcpp::SerializedMessage> /*msg*/) {
                 monitoredTopics_[topicName].messageCount++;
-                RCLCPP_INFO(
-                    get_logger(),
-                    "Topic: %s | Count: %zu",
-                    topicName.c_str(),
-                    monitoredTopics_[topicName].messageCount
-                );
+                // RCLCPP_INFO(
+                //     get_logger(),
+                //     "Topic: %s | Count: %zu",
+                //     topicName.c_str(),
+                //     monitoredTopics_[topicName].messageCount
+                // );
             }
             )
     };
@@ -86,4 +106,9 @@ void DiagnosticsNode::setJointUpdateCallback(
 {
     this->jointUpdateCallback_ = callback;
 }
+
+void DiagnosticsNode::setTopicFrequenciesCallback(std::function<void(const std::vector<std::pair<std::string, double>>&)> callback){
+    topicFrequenciesCallback_ = callback;
+}
+
 }

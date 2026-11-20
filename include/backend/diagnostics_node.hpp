@@ -7,6 +7,8 @@
 #include <string>
 #include <cstddef>
 #include <vector>
+#include <utility>
+#include <functional>
 #include <unordered_map>
 
 
@@ -19,6 +21,8 @@ class DiagnosticsNode : public rclcpp::Node
 public:
     void setJointUpdateCallback(std::function<void(const std::string&, double)> callback);
 
+    void setTopicFrequenciesCallback(std::function<void(const std::vector<std::pair<std::string, double>>&)> callback);
+
     DiagnosticsNode();
     struct MonitoredTopic {
         std::string type;
@@ -30,12 +34,15 @@ public:
 private:
     MonitoredTopic addGenericTopicSubscriber(std::string topicName);
 
+    rclcpp::TimerBase::SharedPtr frequencyTimer_;
+
     std::function<void(const std::string&, double)> jointUpdateCallback_;
     void jointCallback(
         const sensor_msgs::msg::JointState::SharedPtr msg);
 
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr jointSubscription_;
-    // rclcpp::TimerBase::SharedPtr topicScanTimer_;
+
+    std::function<void(const std::vector<std::pair<std::string, double>>&)> topicFrequenciesCallback_;
 
 };
 

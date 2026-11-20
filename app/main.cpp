@@ -36,6 +36,12 @@ int main(int argc, char** argv)
         }
     );
 
+    diagnosticsNode->setTopicFrequenciesCallback(
+        [&diagnosticsBridge](const std::vector<std::pair<std::string, double>>& frequencies) {
+            diagnosticsBridge.updateTopicFrequencies(frequencies);
+        }
+    );
+
     
     rclcpp::executors::SingleThreadedExecutor executor;
     executor.add_node(diagnosticsNode);
