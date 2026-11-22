@@ -41,7 +41,7 @@ Item {
             anchors.topMargin: 16 * root.px
 
             currentIndex: root.modeIndex
-            onTabChanged: root.modeIndex = index
+            onTabChanged: (index) => { root.modeIndex = index }
         }
 
         GamepadControlsPanel {
@@ -66,6 +66,22 @@ Item {
 
             visible: modeTabs.currentIndex == 2
             enabled: visible
+        }
+    }
+
+    Connections {
+        target: gamepadController
+
+        function onActionTriggered(action, actionName) {
+            if (!root.visible) {
+                return
+            }
+
+            if (actionName === "SwitchSubpageNext") {
+                root.modeIndex = (root.modeIndex + 1) % 3
+            } else if (actionName === "SwitchSubpagePrev") {
+                root.modeIndex = (root.modeIndex + 2) % 3
+            }
         }
     }
 }

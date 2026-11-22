@@ -20,8 +20,10 @@ include_directories(include)
 add_executable(LRT_meldog_application
   app/main.cpp
   backend/app_controller.cpp
+  backend/gamepad_controller.cpp
   qml/resources.qrc
   include/backend/app_controller.hpp
+  include/backend/gamepad_controller.hpp
 )
 
 target_link_libraries(LRT_meldog_application PRIVATE
@@ -36,7 +38,6 @@ target_link_libraries(LRT_meldog_application PRIVATE
 install(TARGETS LRT_meldog_application
   DESTINATION lib/${PROJECT_NAME}
 )
-
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
