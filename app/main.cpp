@@ -1,4 +1,3 @@
-
 #include <QApplication>
 #include <QQuickView>
 #include <QQmlContext>
@@ -12,21 +11,20 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include "backend/app_controller.hpp"
+#include "backend/gamepad_controller.hpp"
 #include "backend/diagnostics_node.hpp"
 #include "backend/diagnostics_bridge.hpp"
 
 int main(int argc, char** argv)
 {
-    
     qputenv("LIBGL_ALWAYS_SOFTWARE", "1");
 
     rclcpp::init(argc, argv);
 
     QApplication app(argc, argv);
     backend::AppController appController;
+    backend::GamepadController gamepadController;
 
-
-    
     auto diagnosticsNode =
         std::make_shared<backend::DiagnosticsNode>();
 
@@ -60,7 +58,6 @@ int main(int argc, char** argv)
         }
     );
 
-    
     rclcpp::executors::SingleThreadedExecutor executor;
     executor.add_node(diagnosticsNode);
 
@@ -69,7 +66,6 @@ int main(int argc, char** argv)
         &rosTimer,
         &QTimer::timeout,
         [&executor]() {
-
             if (!rclcpp::ok()) {
                 QApplication::quit();
                 return;
@@ -80,18 +76,15 @@ int main(int argc, char** argv)
 
     rosTimer.start(10);
 
-
     QQuickView view;
-    view.rootContext()->setContextProperty(
-        "appController", &appController);
+    view.rootContext()->setContextProperty("appController", &appController);
+    view.rootContext()->setContextProperty("gamepadController", &gamepadController);
     view.rootContext()->setContextProperty("diagnosticsBridge", &diagnosticsBridge);
 
-    view.setResizeMode(
-        QQuickView::SizeRootObjectToView);
+    view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/main.qml"));
     view.showMaximized();
 
-    
     int result = app.exec();
 
     rosTimer.stop();

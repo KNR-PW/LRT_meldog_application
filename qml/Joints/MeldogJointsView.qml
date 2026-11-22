@@ -23,20 +23,96 @@ Item {
     readonly property color cSlider: cAccent
 
     readonly property real rad2deg: 57.29577951308232
+    readonly property real sliderMin: -1.57
+    readonly property real sliderMax:  1.57
+    readonly property real sliderSpeedRadPerSec: 1.6
 
     property var _values: ({})
+    property int selectedJointIndex: 0
+    property real stickY: 0.0
 
     function _initValues() {
         const o = {}
         for (let i = 0; i < jointNames.length; i++)
             o[jointNames[i]] = 0
         _values = o
+        selectedJointIndex = 0
+        stickY = 0.0
     }
 
     function resetAll() { _initValues() }
 
+    function cycleSelectedJoint(step) {
+        if (!jointNames || jointNames.length === 0)
+            return
+        selectedJointIndex = (selectedJointIndex + step + jointNames.length) % jointNames.length
+    }
+
+    function adjustSelectedJoint(deltaRad) {
+        if (!jointNames || jointNames.length === 0)
+            return
+        const idx = Math.max(0, Math.min(selectedJointIndex, jointNames.length - 1))
+        const jName = jointNames[idx]
+        const current = _values[jName] ?? 0
+        const next = Math.max(sliderMin, Math.min(sliderMax, current + deltaRad))
+
+        if (Math.abs(next - current) < 0.0001)
+            return
+
+        const copy = Object.assign({}, _values)
+        copy[jName] = next
+        _values = copy
+    }
+
     onJointNamesChanged: _initValues()
+    onVisibleChanged: {
+        if (!visible)
+            stickY = 0.0
+    }
     Component.onCompleted: _initValues()
+
+    Timer {
+        id: stickUpdateTimer
+        interval: 20
+        repeat: true
+        running: root.visible && gamepadController.connected && Math.abs(root.stickY) > 0.001
+
+        onTriggered: {
+            // Na Linuxie pchniecie galki w gore daje ujemne Y, wiec odwracamy znak
+            const delta = (-root.stickY) * root.sliderSpeedRadPerSec * (interval / 1000.0)
+            root.adjustSelectedJoint(delta)
+        }
+    }
+
+    Connections {
+        target: gamepadController
+
+        function onActionTriggered(action, actionName) {
+            if (!root.visible)
+                return
+
+            if (actionName === "SelectJointPrev") {
+                root.cycleSelectedJoint(-1)
+            } else if (actionName === "SelectJointNext") {
+                root.cycleSelectedJoint(1)
+            } else if (actionName === "ResetPosition") {
+                root.resetAll()
+            }
+        }
+
+        function onLeftStickChanged(x, y) {
+            if (!root.visible) {
+                root.stickY = 0.0
+                return
+            }
+            root.stickY = y
+        }
+
+        function onConnectedChanged(connected) {
+            if (!connected)
+                root.stickY = 0.0
+        }
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -119,15 +195,26 @@ Item {
                         Repeater {
                             model: root.jointNames
 
-                            delegate: Item {
+                            delegate: Rectangle {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
+                                radius: 10 * px
 
                                 readonly property string jName: modelData
-                                property bool active: false
+                                readonly property bool selected: (index === root.selectedJointIndex)
+                                property bool dragging: false
+                                readonly property bool active: dragging || selected
+
+                                color: selected ? Qt.rgba(255/255, 157/255, 0, 0.08) : "transparent"
+                                border.width: selected ? 2 * px : 1
+                                border.color: selected ? cAccent : "transparent"
+
+                                Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                 Column {
                                     anchors.fill: parent
+                                    anchors.margins: 10 * px
                                     spacing: 10 * px
 
                                     Text {
@@ -146,8 +233,8 @@ Item {
                                         width: 52 * px
                                         height: parent.height - (72 * px)
 
-                                        readonly property real vMin: -1.57
-                                        readonly property real vMax:  1.57
+                                        readonly property real vMin: root.sliderMin
+                                        readonly property real vMax: root.sliderMax
 
                                         readonly property real v: root._values[jName] ?? 0
 
@@ -155,8 +242,8 @@ Item {
 
                                         function yFromValue(val) {
                                             const yMax = Math.max(1, sliderBox.height - handle.height)
-                                            const t = (clamp(val, vMin, vMax) - vMin) / (vMax - vMin)   
-                                            return (1.0 - t) * yMax   
+                                            const t = (clamp(val, vMin, vMax) - vMin) / (vMax - vMin)
+                                            return (1.0 - t) * yMax
                                         }
 
                                         function valueFromY(y) {
@@ -171,7 +258,7 @@ Item {
                                             width: 8 * px
                                             height: parent.height
                                             radius: 3 * px
-                                            color: Qt.rgba(1,1,1,0.10)
+                                            color: selected ? Qt.rgba(255/255, 157/255, 0, 0.25) : Qt.rgba(1,1,1,0.10)
                                         }
 
                                         Rectangle {
@@ -180,7 +267,7 @@ Item {
                                             height: 20 * px
                                             radius: 3 * px
                                             color: cSlider
-                                            border.width: 1
+                                            border.width: selected ? 2 : 1
                                             border.color: "#FFFFFF"
 
                                             x: (sliderBox.width - width) / 2
@@ -205,16 +292,17 @@ Item {
 
                                                 onPressed: {
                                                     cursorShape = Qt.ClosedHandCursor
-                                                    active = true
+                                                    root.selectedJointIndex = index
+                                                    dragging = true
                                                 }
                                                 onReleased: {
                                                     cursorShape = Qt.OpenHandCursor
-                                                    active = false
+                                                    dragging = false
                                                 }
-                                                onCanceled: active = false
+                                                onCanceled: dragging = false
 
                                                 onPositionChanged: {
-                                                    active = true
+                                                    dragging = true
                                                     const newVal = sliderBox.valueFromY(handle.y)
                                                     const copy = Object.assign({}, root._values)
                                                     copy[jName] = newVal
@@ -238,12 +326,12 @@ Item {
                                         }
 
                                         Rectangle {
-                                            width: Math.min(parent.width * 1.1, 140 * px)   
-                                            height: 2 * px                                   
+                                            width: Math.min(parent.width * 1.1, 140 * px)
+                                            height: 2 * px
                                             radius: 1 * px
                                             anchors.horizontalCenter: parent.horizontalCenter
-                                            color: cSlider                                  
-                                            opacity: 0.95
+                                            color: cSlider
+                                            opacity: selected ? 1.0 : 0.45
                                         }
                                     }
                                 }
@@ -353,7 +441,7 @@ Item {
                             cursorShape: Qt.PointingHandCursor
                             onEntered: btnOpen.color = Qt.rgba(0, 255/255, 157/255, 0.10)
                             onExited:  btnOpen.color = Qt.rgba(0, 255/255, 157/255, 0.05)
-                            onClicked: {} 
+                            onClicked: {}
                         }
                     }
 

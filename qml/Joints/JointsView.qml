@@ -13,12 +13,22 @@ Item {
     property bool jointsPanelOpen: false
     property string jointsLegId: ""
 
+    readonly property var legOrder: ["leg_lf", "leg_rf", "leg_lr", "leg_rr"]
+
     property var legToJoints: ({
         "leg_lf": ["LFH_joint", "LFK_joint", "LFT_joint"],
         "leg_rf": ["RFH_joint", "RFK_joint", "RFT_joint"],
         "leg_lr": ["LRH_joint", "LRK_joint", "LRT_joint"],
         "leg_rr": ["RRH_joint", "RRK_joint", "RRT_joint"]
     })
+
+    function cycleLeg(step) {
+        var idx = root.legOrder.indexOf(root.selectedLeg)
+        if (idx < 0) {
+            idx = 0
+        }
+        root.selectedLeg = root.legOrder[(idx + step + root.legOrder.length) % root.legOrder.length]
+    }
 
     function openJointsPanel(legId) {
         root.jointsLegId = legId
@@ -76,7 +86,7 @@ Item {
 
                                 Text {
                                     text: root.selectedLeg
-                                    color: "#2c9bd6"           
+                                    color: "#2c9bd6"
                                     font.pixelSize: 26 * px
                                     font.bold: true
                                 }
@@ -147,7 +157,7 @@ Item {
 
                                 GridLayout {
                                     id: legGrid
-                                    anchors.centerIn: parent   
+                                    anchors.centerIn: parent
                                     columns: 1
                                     columnSpacing: 20 * px
                                     rowSpacing: 20 * px
@@ -247,6 +257,30 @@ Item {
                 jointNames: root.legToJoints[root.jointsLegId] || []
 
                 onBackRequested: root.closeJointsPanel()
+            }
+        }
+    }
+
+    Connections {
+        target: gamepadController
+
+        function onActionTriggered(action, actionName) {
+            if (!root.visible) {
+                return
+            }
+
+            if (!root.jointsPanelOpen) {
+                if (actionName === "MoveJointDown" || actionName === "SelectJointNext") {
+                    root.cycleLeg(1)
+                } else if (actionName === "MoveJointUp" || actionName === "SelectJointPrev") {
+                    root.cycleLeg(-1)
+                } else if (actionName === "DoMeldogFlip") {
+                    root.openJointsPanel(root.selectedLeg)
+                }
+            } else {
+                if (actionName === "StartPosition") {
+                    root.closeJointsPanel()
+                }
             }
         }
     }

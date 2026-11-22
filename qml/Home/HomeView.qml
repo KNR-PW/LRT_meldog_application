@@ -8,9 +8,9 @@ Item {
     property real px: 1.0
     property int modeIndex: 0
 
-    Card { 
-        id: mainCard 
-        px: root.px 
+    Card {
+        id: mainCard
+        px: root.px
         clip: true
 
         anchors.left: parent.left
@@ -41,7 +41,7 @@ Item {
             anchors.topMargin: 16 * root.px
 
             currentIndex: root.modeIndex
-            onTabChanged: root.modeIndex = index
+            onTabChanged: (index) => { root.modeIndex = index }
         }
 
         GamepadControlsPanel {
@@ -53,7 +53,7 @@ Item {
             anchors.bottomMargin: 72 * root.px
             anchors.bottom: parent.bottom
 
-            visible: modeTabs.currentIndex === 0
+            visible: root.modeIndex === 0
             enabled: visible
         }
 
@@ -64,8 +64,26 @@ Item {
             anchors.top: modeTabs.bottom
             anchors.topMargin: 28 * px
 
-            visible: modeTabs.currentIndex == 2
+            visible: root.modeIndex === 2
             enabled: visible
+        }
+    }
+
+    Connections {
+        target: gamepadController
+
+        function onActionTriggered(action, actionName) {
+            if (!root.visible) {
+                return
+            }
+
+            if (actionName === "SwitchSubpageNext") {
+                root.modeIndex = (root.modeIndex + 1) % 3
+                modeTabs.currentIndex = root.modeIndex
+            } else if (actionName === "SwitchSubpagePrev") {
+                root.modeIndex = (root.modeIndex + 2) % 3
+                modeTabs.currentIndex = root.modeIndex
+            }
         }
     }
 }
