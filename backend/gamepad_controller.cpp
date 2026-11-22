@@ -17,6 +17,7 @@ namespace {
 constexpr int kReconnectIntervalMs = 500;
 constexpr int kHoldCheckIntervalMs = 25;
 constexpr int kAxisButtonThreshold = 16000;
+constexpr int kTriggerButtonThreshold = 4000;
 constexpr int kMaxJoystickDevices = 4;
 constexpr double kStickChangeEpsilon = 0.02;
 }  // namespace
@@ -315,7 +316,7 @@ void GamepadController::handleJsEvent(unsigned int type, unsigned int number, in
             updateStickAxis(Stick::LeftStick, false, value);
             break;
         case 2:  // Spust L2 (-32767..32767)
-            processButtonState(Button::L2, value > kAxisButtonThreshold);
+            processButtonState(Button::L2, value > kTriggerButtonThreshold);
             break;
         case 3:  // Prawa galka X
             updateStickAxis(Stick::RightStick, true, value);
@@ -324,7 +325,7 @@ void GamepadController::handleJsEvent(unsigned int type, unsigned int number, in
             updateStickAxis(Stick::RightStick, false, value);
             break;
         case 5:  // Spust R2 (-32767..32767)
-            processButtonState(Button::R2, value > kAxisButtonThreshold);
+            processButtonState(Button::R2, value > kTriggerButtonThreshold);
             break;
         case 6:  // D-Pad poziomo
             processButtonState(Button::DpadLeft, value < -kAxisButtonThreshold);

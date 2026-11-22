@@ -14,7 +14,8 @@ Rectangle {
     property var tabs: [
         { label: "DASHBOARD" },
         { label: "RVIZ" },
-        { label: "JOINTS" }
+        { label: "JOINTS" },
+        { label: "DIAGNOSTICS"}
     ]
 
     readonly property int itemCount: tabs.length

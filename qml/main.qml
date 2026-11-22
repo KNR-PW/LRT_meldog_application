@@ -4,6 +4,7 @@ import "Components"
 import "Home"
 import "Rviz"
 import "Joints"
+import "Diagnostics"
 
 BackgroundRoot {
     id: root
@@ -47,6 +48,13 @@ BackgroundRoot {
             visible: mainToolBar.toolbarIndex === 2
             enabled: visible
         }
+
+        DiagnosticsView {
+            anchors.fill: parent
+            px: root.px
+            visible: mainToolBar.toolbarIndex === 3
+            enabled: visible
+        }
     }
 
     Connections {
@@ -57,10 +65,15 @@ BackgroundRoot {
         }
 
         function onActionTriggered(action, actionName) {
+            const count = mainToolBar.itemCount
+            if (count <= 0) {
+                return
+            }
+
             if (actionName === "SwitchPageNext") {
-                mainToolBar.toolbarIndex = (mainToolBar.toolbarIndex + 1) % 3
+                mainToolBar.toolbarIndex = (mainToolBar.toolbarIndex + 1) % count
             } else if (actionName === "SwitchPagePrev") {
-                mainToolBar.toolbarIndex = (mainToolBar.toolbarIndex + 2) % 3
+                mainToolBar.toolbarIndex = (mainToolBar.toolbarIndex - 1 + count) % count
             } else {
                 console.log("[QML] Action:", actionName)
             }
