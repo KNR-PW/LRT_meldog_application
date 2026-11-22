@@ -34,6 +34,16 @@ void DiagnosticsBridge::updateTopicFrequencies(
     emit topicFrequenciesUpdated(topics);
 }
 
+void DiagnosticsBridge::addTopic(const QString& name)
+{
+    emit addTopicRequested(name);
+}
+
+void DiagnosticsBridge::removeTopic(const QString& name)
+{
+    emit removeTopicRequested(name);
+}
+
 
 
 }

@@ -35,10 +35,6 @@ DiagnosticsNode::DiagnosticsNode(): Node("meldog_diagnostics")
 
             for (auto& [topicName, topicData] : monitoredTopics_) {
 
-                if (!topicData.subscription) {
-                    continue;
-                }
-
                 frequencies.push_back({topicName, topicData.messageCount});
                 topicData.messageCount = 0;
                 
@@ -48,6 +44,19 @@ DiagnosticsNode::DiagnosticsNode(): Node("meldog_diagnostics")
             }
         }
     );
+}
+
+void DiagnosticsNode::addMonitoredTopic(const std::string& topicName){
+    if(monitoredTopics_.find(topicName) != monitoredTopics_.end())return;
+    if (topicName.empty()) return;
+    
+    monitoredTopics_.emplace(topicName, addGenericTopicSubscriber(topicName));
+
+}
+
+
+void DiagnosticsNode::removeMonitoredTopic(const std::string& topicName){
+    monitoredTopics_.erase(topicName);
 }
 
 
@@ -74,12 +83,6 @@ DiagnosticsNode::MonitoredTopic DiagnosticsNode::addGenericTopicSubscriber(std::
 
             [this, topicName](std::shared_ptr<rclcpp::SerializedMessage> /*msg*/) {
                 monitoredTopics_[topicName].messageCount++;
-                // RCLCPP_INFO(
-                //     get_logger(),
-                //     "Topic: %s | Count: %zu",
-                //     topicName.c_str(),
-                //     monitoredTopics_[topicName].messageCount
-                // );
             }
             )
     };

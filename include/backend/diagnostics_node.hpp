@@ -29,7 +29,9 @@ public:
         std::size_t messageCount = 0;
         rclcpp::GenericSubscription::SharedPtr subscription;
     };
-    std::unordered_map<std::string, MonitoredTopic> monitoredTopics_ = {{"/joint_states", MonitoredTopic{}}, {"/tf", MonitoredTopic{}}};
+    std::unordered_map<std::string, MonitoredTopic> monitoredTopics_ = {{"/joint_states", MonitoredTopic{}}, {"/tf", MonitoredTopic{}}}; 
+    void addMonitoredTopic(const std::string& topicName);
+    void removeMonitoredTopic(const std::string& topicName);
 
 private:
     MonitoredTopic addGenericTopicSubscriber(std::string topicName);

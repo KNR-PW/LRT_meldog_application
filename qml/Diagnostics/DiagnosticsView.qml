@@ -44,15 +44,16 @@ Rectangle {
         }
 
         function onTopicFrequenciesUpdated(topics) {
-            console.log("Received", topics.length, "topics")
+            topicModel.clear()
 
             for (let top = 0; top < topics.length; top++) {
-                console.log(topics[top].name, topics[top].frequency)
-                for(let i = 0; i < topicModel.count; i++){
-                    if(topicModel.get(i).topicName===topics[top].name){
-                        topicModel.setProperty(i, "frequency", topics[top].frequency)
-                    }
-                }
+            
+                topicModel.append({
+                    topicName: topics[top].name,
+                    "frequency": topics[top].frequency
+                })
+                    
+                
             }
         }
     }
@@ -143,6 +144,18 @@ Rectangle {
                         renderType: Text.NativeRendering
                         font.pixelSize: 18
                     }
+
+                    Button {
+                        text: "Delete"
+
+                        background: Rectangle {
+                            color: "#f45757"
+                        }
+
+                        onClicked: {
+                            diagnosticsBridge.removeTopic(model.topicName)
+                        }
+                    }
                 }
             }
         }
@@ -154,20 +167,15 @@ Rectangle {
                 id: topicInput
                 width: 300
                 placeholderText: "/new_topic"
+                text: "/"
             }
 
             Button {
                 text: "Add Topic"
 
                 onClicked: {
-                    if (topicInput.text!==""){
-                        topicModel.append({
-                            topicName: topicInput.text,
-                            frequency: 0.0
-                        })
-                    }
-
-                    topicInput.text = ""
+                    diagnosticsBridge.addTopic(topicInput.text)
+                    topicInput.text = "/"
                 }
             }
         }

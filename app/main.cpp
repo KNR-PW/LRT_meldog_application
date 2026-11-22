@@ -5,6 +5,8 @@
 #include <QUrl>
 #include <QTimer>
 #include <QQuickWindow>
+#include <QStringList>
+#include <QVariant>
 
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
@@ -39,6 +41,22 @@ int main(int argc, char** argv)
     diagnosticsNode->setTopicFrequenciesCallback(
         [&diagnosticsBridge](const std::vector<std::pair<std::string, double>>& frequencies) {
             diagnosticsBridge.updateTopicFrequencies(frequencies);
+        }
+    );
+
+    QObject::connect(
+        &diagnosticsBridge,
+        &backend::DiagnosticsBridge::addTopicRequested,
+        [&diagnosticsNode](const QString& name) {
+            diagnosticsNode->addMonitoredTopic(name.toStdString());
+        }
+    );
+
+    QObject::connect(
+        &diagnosticsBridge,
+        &backend::DiagnosticsBridge::removeTopicRequested,
+        [&diagnosticsNode](const QString& name) {
+            diagnosticsNode->removeMonitoredTopic(name.toStdString());
         }
     );
 
