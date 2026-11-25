@@ -57,7 +57,47 @@ Rectangle {
             }
         }
     }
+
+    Component.onCompleted: {
+
+        updateSuggestions()
+    }
     
+    ListModel {
+        id: suggestionModel
+    }
+
+    function updateSuggestions(){
+        suggestionModel.clear()
+        for (let avail = 0; avail < availableTopics.length; avail++) {
+
+            let is_matching = true
+
+            for(let lt = 0; lt < topicInput.text.length; lt++){
+                if(availableTopics[avail][lt] != topicInput.text[lt]){
+                    is_matching = false
+                    continue;
+                }
+            }
+
+            if(is_matching == false){
+                continue;
+            }
+
+            let is_monitored = false
+
+            for(let cur = 0; cur < topicModel.count; cur++){
+                if (availableTopics[avail] == topicModel.get(cur).topicName){
+                    is_monitored = true
+                    break;
+                }
+            } 
+
+            if(is_monitored == false){
+                suggestionModel.append({topicName : availableTopics[avail]})
+            }
+        }
+    }
 
     // Joints
 
@@ -107,6 +147,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.margins: 20
         width: 500
+        height: 400
         spacing: 20
 
         Text {
@@ -154,6 +195,7 @@ Rectangle {
 
                         onClicked: {
                             diagnosticsBridge.removeTopic(model.topicName)
+                            updateSuggestions()
                         }
                     }
                 }
@@ -168,6 +210,64 @@ Rectangle {
                 width: 300
                 placeholderText: "/new_topic"
                 text: "/"
+                
+                onTextEdited: {
+                    updateSuggestions()
+                    if (suggestionModel.count > 0)
+                        suggestionPopup.open()
+                    else
+                        suggestionPopup.close()
+
+                }
+
+
+                Popup {
+                    id: suggestionPopup
+
+                    x: 0
+                    y: -height - 4
+
+                    width: topicInput.width
+                    height: Math.min(suggestionModel.count, 4) * 40 + 4
+
+                    padding: 2
+                    focus: false
+                    closePolicy: Popup.CloseOnPressOutside | Popup.CloseOnEscape
+
+
+                    background: Rectangle {
+                        color: "#1D2A3A"
+                        border.color: "#455B77"
+                        radius: 6
+                    }
+
+                    contentItem: ListView {
+                        id: suggestionList
+                        clip: true
+                        model: suggestionModel
+
+                            delegate: ItemDelegate {
+                            width: suggestionList.width
+                            height: 40
+
+                            background: Rectangle {
+                                color: parent.hovered ? "#31465F" : "#1D2A3A"
+                            }
+
+                                contentItem: Text {
+                                text: model.topicName
+                                color: "white"
+                                verticalAlignment: Text.AlignVCenter
+                                leftPadding: 10
+                            }
+
+                                onClicked: {
+                                    topicInput.text = model.topicName
+                                    suggestionPopup.close()
+                                }
+                        }
+                    }
+                }
             }
 
             Button {
@@ -175,11 +275,10 @@ Rectangle {
 
                 onClicked: {
                     diagnosticsBridge.addTopic(topicInput.text)
+                    updateSuggestions()
                     topicInput.text = "/"
                 }
             }
         }
     }
-
-
 }

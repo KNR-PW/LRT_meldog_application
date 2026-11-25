@@ -25,8 +25,19 @@ int main(int argc, char** argv)
     backend::AppController appController;
     backend::GamepadController gamepadController;
 
-    auto diagnosticsNode =
-        std::make_shared<backend::DiagnosticsNode>();
+    auto diagnosticsNode = std::make_shared<backend::DiagnosticsNode>();
+
+    QStringList availableTopics = {
+        "/clicked_point",
+        "/goal_pose",
+        "/initialpose",
+        "/joint_states",
+        "/parameter_events",
+        "/robot_description",
+        "/rosout",
+        "/tf",
+        "/tf_static"
+    };
 
     backend::DiagnosticsBridge diagnosticsBridge;
 
@@ -79,7 +90,9 @@ int main(int argc, char** argv)
     QQuickView view;
     view.rootContext()->setContextProperty("appController", &appController);
     view.rootContext()->setContextProperty("gamepadController", &gamepadController);
+
     view.rootContext()->setContextProperty("diagnosticsBridge", &diagnosticsBridge);
+    view.rootContext()->setContextProperty("availableTopics",QVariant::fromValue(availableTopics));
 
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/main.qml"));
